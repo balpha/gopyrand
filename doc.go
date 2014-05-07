@@ -27,12 +27,16 @@ The following seeding methods are provided. They take numbers
 in various representations and will cause the Random to generate the same
 values as a Python 2 random.Random seeded with the same number. The argument
 to SeedFromBytes is interpreted as big-endian (most significant byte first).
+In contrast, the argument to SeedFromUInt32s (around which all the others
+are essentially wrappers) interprets it as little-endian (least significant
+uint32 first).
 
     SeedFromUInt32(uint32)
     SeedFromUInt64(uint64)
     SeedFromBig(*big.Int)
     SeedFromHexString(string)
     SeedFromBytes([]byte)
+    SeedFromUInt32s([]uint32)
 
 The following methods to retrieve random numbers are provided, and they
 mimic the correspondingly named Python methods. Note that, unlike the Python
