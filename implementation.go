@@ -76,17 +76,17 @@
 package pyrand
 
 const (
-	N                 = 624
-	M                 = 397
-	MATRIX_A   uint32 = 0x9908b0df // constant vector a
-	UPPER_MASK uint32 = 0x80000000 // most significant w-r bits
-	LOWER_MASK uint32 = 0x7fffffff // least significant r bits
+	cN                 = 624
+	cM                 = 397
+	cMATRIX_A   uint32 = 0x9908b0df // constant vector a
+	cUPPER_MASK uint32 = 0x80000000 // most significant w-r bits
+	cLOWER_MASK uint32 = 0x7fffffff // least significant r bits
 )
 
-var mag01 = [2]uint32{0, MATRIX_A}
+var mag01 = [2]uint32{0, cMATRIX_A}
 
 type Random struct {
-	state [N]uint32
+	state [cN]uint32
 	index uint32
 }
 
@@ -107,18 +107,18 @@ func (r *Random) genrandRes53() float64 {
 func (r *Random) genRandInt32() uint32 {
 	var y uint32
 	mt := &r.state
-	if r.index >= N { // generate N words at one time
+	if r.index >= cN { // generate N words at one time
 		var kk uint32
-		for kk = 0; kk < N-M; kk++ {
-			y = (mt[kk] & UPPER_MASK) | (mt[kk+1] & LOWER_MASK)
-			mt[kk] = mt[kk+M] ^ (y >> 1) ^ mag01[y&1]
+		for kk = 0; kk < cN-cM; kk++ {
+			y = (mt[kk] & cUPPER_MASK) | (mt[kk+1] & cLOWER_MASK)
+			mt[kk] = mt[kk+cM] ^ (y >> 1) ^ mag01[y&1]
 		}
-		for ; kk < N-1; kk++ {
-			y = (mt[kk] & UPPER_MASK) | (mt[kk+1] & LOWER_MASK)
-			mt[kk] = mt[kk+M-N] ^ (y >> 1) ^ mag01[y&1]
+		for ; kk < cN-1; kk++ {
+			y = (mt[kk] & cUPPER_MASK) | (mt[kk+1] & cLOWER_MASK)
+			mt[kk] = mt[kk+cM-cN] ^ (y >> 1) ^ mag01[y&1]
 		}
-		y = (mt[N-1] & UPPER_MASK) | (mt[0] & LOWER_MASK)
-		mt[N-1] = mt[M-1] ^ (y >> 1) ^ mag01[y&1]
+		y = (mt[cN-1] & cUPPER_MASK) | (mt[0] & cLOWER_MASK)
+		mt[cN-1] = mt[cM-1] ^ (y >> 1) ^ mag01[y&1]
 
 		r.index = 0
 	}
@@ -137,7 +137,7 @@ func (r *Random) initGenrand(s uint32) {
 	var mti uint32
 	mt := &r.state
 	mt[0] = s
-	for mti = 1; mti < N; mti++ {
+	for mti = 1; mti < cN; mti++ {
 		/* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
 		/* In the previous versions, MSBs of the seed affect   */
 		/* only MSBs of the array mt[].                        */
@@ -154,8 +154,8 @@ func (r *Random) initBySlice(initKey []uint32) {
 	r.initGenrand(19650218)
 	var i, j uint32 = 1, 0
 	var k uint32
-	if N > keyLength {
-		k = N
+	if cN > keyLength {
+		k = cN
 	} else {
 		k = keyLength
 	}
@@ -163,19 +163,19 @@ func (r *Random) initBySlice(initKey []uint32) {
 		mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525)) + initKey[j] + j // non linear
 		i++
 		j++
-		if i >= N {
-			mt[0] = mt[N-1]
+		if i >= cN {
+			mt[0] = mt[cN-1]
 			i = 1
 		}
 		if j >= keyLength {
 			j = 0
 		}
 	}
-	for k = N - 1; k > 0; k-- {
+	for k = cN - 1; k > 0; k-- {
 		mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941)) - i // non linear
 		i++
-		if i >= N {
-			mt[0] = mt[N-1]
+		if i >= cN {
+			mt[0] = mt[cN-1]
 			i = 1
 		}
 	}
