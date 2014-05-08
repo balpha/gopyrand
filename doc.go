@@ -20,8 +20,10 @@ and thus useless; there is no auto-seeding because the only point of this
 implementation is that it predictably gives the same number sequences as Python
 when seeded identically. So the first thing you should do is seed the Random:
 
-    r := Random{}
+    r := NewRandom()
     r.SeedFromUInt32(12345)
+    
+Note that a Random is inherently mutable
 
 The following seeding methods are provided. They take numbers
 in various representations and will cause the Random to generate the same

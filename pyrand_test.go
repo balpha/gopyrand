@@ -47,7 +47,7 @@ func assertEqual32s(a []uint32, b []uint32, t *testing.T) {
 }
 
 func makeR(seed interface{}, iterations int) *Random {
-	r := &Random{}
+	r := NewRandom()
 	switch seed := seed.(type) {
 	default:
 		panic("cannot seed from this")

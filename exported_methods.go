@@ -3,6 +3,11 @@ package pyrand
 import "math/big"
 import "fmt"
 
+// Returns a new Random ready to be used
+func NewRandom() *Random {
+	return &Random{}
+}
+
 // SeedFromUInt32 seeds the PRNG with the given seed value,
 // causing the same sequence of numbers to be generated as
 // when seeding Python's PRNG with the corresponding number.
