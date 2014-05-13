@@ -118,7 +118,7 @@ func (r *Random) RandInt(a int, b int) int {
 
 const maxwidth = 1 << 53
 
-// RandInt returns a random integer in range [a, b), including the low value but
+// RandInt returns a random integer in range [start, stop), including the low value but
 // excluding the high value.
 func (r *Random) RandRange(start int, stop int) int {
 	if start >= stop {
@@ -129,4 +129,20 @@ func (r *Random) RandRange(start int, stop int) int {
 		return start + int(r.randBelow(width))
 	}
 	return int(start + int(r.Random()*float64(width)))
+}
+
+// Choice is essentially RandRange with a first argument of 0.
+// It's provided here as the equivalent to Python's random.choice(),
+// where
+//
+//     l := []byte{42, 666, 13}
+//     c := l[r.Choice(len(l))]
+//
+// is equivalent to Python's
+//
+//     l := [42, 666, 13]
+//     c := r.choice(l)
+//
+func (r *Random) Choice(length int) int {
+	return int(r.Random() * float64(length))
 }
